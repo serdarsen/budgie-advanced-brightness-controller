@@ -5,6 +5,10 @@ UBrightnessController
 UBrightnessController is an Ubuntu Budgie desktop applet for productivity.<br/><br/>  
   
 <img src="https://raw.githubusercontent.com/serdarsen/UBrightnessController/master/screenshots/screenshot1.gif" width="300" height="409"/>  
+
+
+[![forthebadge](https://forthebadge.com/images/badges/made-with-python.svg)](https://forthebadge.com)
+
   
 Usage  
 -------  
