@@ -34,8 +34,8 @@ gi.require_version('Wnck', '3.0')
 from gi.repository import Budgie, GObject, Wnck, Gtk, Gdk
 import executor as Executor
 import check_displays as CDisplay
-import os
-from stat import *
+import os.path
+#from stat import *
 
 class UBrightnessController(GObject.GObject, Budgie.Plugin):
     #This is simply an entry point into your Budgie Applet implementation. Note you must always override Object, and implement Plugin.
@@ -55,8 +55,9 @@ class UBrightnessControllerApplet(Budgie.Applet):
     #Budgie.Applet is in fact a Gtk.Bin
     manager = None
 
-    def getFileReadWritePermission(self, path):
-        os.chmod(path, S_IRUSR | S_IWUSR | S_IROTH)
+    # it doesn't work, gives error
+    # def getFileReadWritePermission(self, path):
+    #     os.chmod(path, S_IRUSR | S_IWUSR | S_IROTH)
 
     def saveBrightnessValue(self, val):
         file = open(self.file_path,"w")
@@ -94,9 +95,10 @@ class UBrightnessControllerApplet(Budgie.Applet):
         
         #about files
         self.dir_path = os.path.dirname(os.path.realpath(__file__))
-        self.file_path = self.dir_path + "/ubrightnesscontroller"
+        #self.file_path = self.dir_path + "/ubrightnesscontroller"
+        self.file_path = "/tmp/ubrightnesscontroller"
         self.image_path = self.dir_path + "/brightness.svg"
-        self.getFileReadWritePermission(self.file_path)
+        #self.getFileReadWritePermission(self.file_path)
         
         #about displays
         self.display1 = None
@@ -177,3 +179,4 @@ class UBrightnessControllerApplet(Budgie.Applet):
     def do_update_popovers(self, manager):
     	self.manager = manager
     	self.manager.register_popover(self.box, self.popover)
+
