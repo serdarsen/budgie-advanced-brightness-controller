@@ -15,7 +15,7 @@ Usage
    cd /usr/lib/budgie-desktop/plugins
    
    # Clone UBrightnessController (/usr/lib/budgie-desktop/plugins/UBrightnessController).
-   git clone https://github.com/serdarsen/UBrightnessController.git
+   sudo git clone https://github.com/serdarsen/UBrightnessController.git
    
    # Restart ubuntu. Run following code or restart normally.
    sudo reboot
