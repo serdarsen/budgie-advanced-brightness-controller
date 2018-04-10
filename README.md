@@ -19,12 +19,15 @@ Usage
    
    # Restart ubuntu. Run following code or restart normally.
    sudo reboot
+
+   # After restart you can add U Brightness Controller to your panel from Budgie Desktop Settings.
+
 ```  
 References  
 -------  
-[Ubuntu Budgie](https://ubuntubudgie.org/)
-   [budgie-desktop/budgie-desktop-examples](https://github.com/budgie-desktop/budgie-desktop-examples/tree/master/python_project)
-  [LordAmit/Brightness](https://github.com/LordAmit/Brightness)
+[Ubuntu Budgie](https://ubuntubudgie.org/)<br/>
+[budgie-desktop/budgie-desktop-examples](https://github.com/budgie-desktop/budgie-desktop-examples/tree/master/python_project)<br/>
+[LordAmit/Brightness](https://github.com/LordAmit/Brightness)
 
 
 License  
