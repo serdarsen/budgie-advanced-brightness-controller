@@ -32,8 +32,8 @@ Thanks my references for their projects:
 
 [Ubuntu Budgie](https://ubuntubudgie.org/)<br/>
 [budgie-desktop/budgie-desktop-examples](https://github.com/budgie-desktop/budgie-desktop-examples/tree/master/python_project)<br/>
-[LordAmit/Brightness](https://github.com/LordAmit/Brightness)
-[dbrady/bin](https://github.com/dbrady/bin/blob/master/indicator-brightness.py)
+[LordAmit/Brightness](https://github.com/LordAmit/Brightness)<br/>
+[dbrady/bin](https://github.com/dbrady/bin/blob/master/indicator-brightness.py)<br/>
 [dgaw/budgie-workspaces-compact](https://github.com/dgaw/budgie-workspaces-compact)
 
 
