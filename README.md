@@ -4,7 +4,7 @@ UBrightnessController
 [![forthebadge](https://forthebadge.com/images/badges/made-with-python.svg)](https://forthebadge.com)
  
 <br/>  
-UBrightnessController is an Ubuntu Budgie desktop applet for productivity.<br/><br/>  
+UBrightnessController is a Budgie Desktop applet for productivity.<br/><br/>  
   
 <img src="https://raw.githubusercontent.com/serdarsen/UBrightnessController/master/screenshots/screenshot2.gif" width="341" height="354"/>  
   
