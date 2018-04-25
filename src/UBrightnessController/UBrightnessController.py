@@ -53,12 +53,25 @@ class UBrightnessController(GObject.GObject, Budgie.Plugin):
 class UBrightnessControllerApplet(Budgie.Applet):
     #Budgie.Applet is in fact a Gtk.Bin
     manager = None
+    isBacklightAvailable = True
+    isDimAvailable = True
+    dimValue = 0.5
 
     ############################################
     ###  Brightness (Light) methods Start      #
     ############################################
     MAXSTEPS = 15 # Depends on gnome-settings-daemon
     closest = lambda self, num,list: min(list, key = lambda x: abs(x-num))
+
+    def setBacklightAvailable(self, b):
+        self.isBacklightAvailable = b
+        if(not self.isBacklightAvailable):
+            print("UBrightnessController No backlight detected")
+
+    def setDimAvailable(self, b):
+        self.isDimAvailable = b
+        if(not self.isDimAvailable):
+            print("UBrightnessController Dim is not available")
 
     def get_brightness_settings(self):
         if self.max_brightness < self.MAXSTEPS:
@@ -74,18 +87,33 @@ class UBrightnessControllerApplet(Budgie.Applet):
             p = subprocess.Popen(['pkexec','/usr/lib/gnome-settings-daemon/gsd-backlight-helper','--get-max-brightness'], stdout=subprocess.PIPE)
             mb = int(p.communicate()[0])
         except:
+        
             mb = 0
         return mb
 
     def get_curr_brightness(self):
-        p = subprocess.Popen(['pkexec','/usr/lib/gnome-settings-daemon/gsd-backlight-helper','--get-brightness'], stdout=subprocess.PIPE)
-        self.curr_brightness = int(p.communicate()[0])
-        c = self.closest(self.curr_brightness, self.brightness_settings)
+        try:
+            p = subprocess.Popen(['pkexec','/usr/lib/gnome-settings-daemon/gsd-backlight-helper','--get-brightness'], stdout=subprocess.PIPE)
+            self.curr_brightness = int(p.communicate()[0])
+            c = self.closest(self.curr_brightness, self.brightness_settings)
+        except :
+            return self.setBacklightAvailable(False)
+
         return self.brightness_settings.index(c)
 
     def setBrightness(self):
         if self.brightnessValue is not None:
-            subprocess.call(['pkexec','/usr/lib/gnome-settings-daemon/gsd-backlight-helper','--set-brightness',"%s" % self.brightnessValue])
+            try:
+                subprocess.call(['pkexec','/usr/lib/gnome-settings-daemon/gsd-backlight-helper','--set-brightness',"%s" % self.brightnessValue])
+            except:
+                self.setBacklightAvailable(False)
+
+    # any signal from the scales is signaled to the dimValueLabel the text of which is changed
+    def brightness_scale_moved(self, event):
+        if(self.isBacklightAvailable):
+            self.brightnessValue = "%.0f" % self.brightnessScale.get_value()
+            self.setBrightness()
+            self.brightnessValueLabel.set_text(self.brightnessValue)
 
     def initBrightness(self):
         self.max_brightness = self.get_max_brightness()
@@ -100,53 +128,61 @@ class UBrightnessControllerApplet(Budgie.Applet):
     ###  Brightness (Dim) methods Start        #
     ############################################
     def saveDimValue(self, val):
-        file = open(self.file_path,"w")
-        file.write("%s"%(str(val)))
-        file.close()
+        try:
+            file = open(self.file_path,"w")
+            file.write("%s"%(str(val)))
+            file.close()
+        except:
+            print("UBrightnessController dim value save error")
         
     def retriveDimValue(self):
-        if(os.path.isfile(self.file_path)):
-            file = open(self.file_path,"r")
-            file.seek(0)
-            val = file.read() 
-            file.close()
-            if (val == None):
-                val = "0.5"
-            if (val == ""):
-                val = "0.5"
-            return float("%s"%(val)) 
-        else:
-            return float("0.5") 
+        val = "0.5"
+        try:
+            if(os.path.isfile(self.file_path)):
+                file = open(self.file_path,"r")
+                file.seek(0)
+                val = file.read() 
+                file.close()
+                if (val == None):
+                    val = "0.5"
+                if (val == ""):
+                    val = "0.5"
+        except:
+            print("UBrightnessController dim value retrive error")
+
+        return float("%s"%(val)) 
 
     def __assign_displays(self):
         #assigns display name
-        self.displays = CDisplay.detect_display_devices()
-        self.no_of_displays = len(self.displays)
-        self.no_of_connected_dev = self.no_of_displays
-        if self.no_of_displays is 1:
-            self.display1 = self.displays[0]
-        elif self.no_of_displays is 2:
-            self.display1 = self.displays[0]
-            self.display2 = self.displays[1]        
+
+        try:
+            self.displays = CDisplay.detect_display_devices()
+            self.no_of_displays = len(self.displays)
+            self.no_of_connected_dev = self.no_of_displays
+            if self.no_of_displays is 1:
+                self.display1 = self.displays[0]
+            elif self.no_of_displays is 2:
+                self.display1 = self.displays[0]
+                self.display2 = self.displays[1]        
+        except:
+            self.setDimAvailable(False)
 
     def setDim(self):
-        # Change brightness
-        cmd_value = "xrandr --output %s --brightness %s" % (self.display1, self.dimValue)
-        subprocess.check_output(cmd_value, shell = True)
+        #Change brightness
+        try:
+            cmd_value = "xrandr --output %s --brightness %s" % (self.display1, self.dimValue)
+            subprocess.check_output(cmd_value, shell = True)
+        except:
+            self.setDimAvailable(False)
 
     # any signal from the scales is signaled to the dimValueLabel the text of which is changed
     def dim_scale_moved(self, event):
         # get brightness from scale ui element
-        self.dimValue = self.dimScale.get_value() / 100
-        self.saveDimValue(self.dimValue)
-        self.setDim()
-        self.dimValueLabel.set_text("%.1f"%(self.dimValue * 100))
-
-    # any signal from the scales is signaled to the dimValueLabel the text of which is changed
-    def brightness_scale_moved(self, event):
-        self.brightnessValue = "%.0f" % self.brightnessScale.get_value() 
-        self.setBrightness()
-        self.brightnessValueLabel.set_text(self.brightnessValue)
+        if(self.isDimAvailable):
+            self.dimValue = self.dimScale.get_value() / 100
+            self.saveDimValue(self.dimValue)
+            self.setDim()
+            self.dimValueLabel.set_text("%.1f"%(self.dimValue * 100))
 
     ############################################
     ###  Brightness (Dim) methods End        #
@@ -166,11 +202,9 @@ class UBrightnessControllerApplet(Budgie.Applet):
         self.display2 = None
         self.no_of_connected_dev = 0
         self.__assign_displays()
+        self.setDim()
         self.box = Gtk.EventBox()
         
-        #about light
-        self.initBrightness();
-
         #about ui
         self.iconImage = Gtk.Image()
         self.iconImage.set_from_file(self.image_path)
@@ -179,45 +213,67 @@ class UBrightnessControllerApplet(Budgie.Applet):
         self.box.show_all()
         self.add(self.box)
         self.popover = Budgie.Popover.new(self.box)
-        self.popover.set_default_size(140, 300)
 
-        # Gtk.Adjustment(initial value - won't work properly I'm also using set_value() below, min value, max value, step increment - press cursor keys to see!, page increment - click around the handle to see!, age size - not used here)
-        gtkAdjustmentForDimScale = Gtk.Adjustment(50, 10, 100, 5, 0.1, 0) 
-        gtkAdjustmentForBrightnessScale = Gtk.Adjustment(2, 0, self.max_brightness, 5, 1, 0)
+        #about light
+        self.initBrightness();
 
-        # a vertical scale
-        self.dimScale = Gtk.Scale(orientation=Gtk.Orientation.VERTICAL, adjustment=gtkAdjustmentForDimScale)
-        self.brightnessScale = Gtk.Scale(orientation=Gtk.Orientation.VERTICAL, adjustment=gtkAdjustmentForBrightnessScale)
+        if(self.isBacklightAvailable and self.isDimAvailable):
+            self.popover.set_default_size(140, 300)
+        else:
+            self.popover.set_default_size(70, 300)
+
+        if(self.isDimAvailable):
+            # Gtk.Adjustment(initial value - won't work properly I'm also using set_value() below, min value, max value, step increment - press cursor keys to see!, page increment - click around the handle to see!, age size - not used here)
+            gtkAdjustmentForDimScale = Gtk.Adjustment(50, 10, 100, 5, 0.1, 0) 
         
-        # that can expand vertically if there is space in the grid (see below)
-        self.dimScale.set_value_pos(Gtk.PositionType.BOTTOM)
-        self.dimScale.set_draw_value (False)
-        self.dimScale.set_vexpand(True)
-        self.dimScale.set_hexpand(True)
-        self.dimScale.set_inverted(True)
+        if(self.isBacklightAvailable):
+            gtkAdjustmentForBrightnessScale = Gtk.Adjustment(2, 0, self.max_brightness, 5, 1, 0)
 
-        self.brightnessScale.set_value_pos(Gtk.PositionType.BOTTOM)
-        self.brightnessScale.set_draw_value (False)
-        self.brightnessScale.set_vexpand(True)
-        self.brightnessScale.set_hexpand(True)
-        self.brightnessScale.set_inverted(True)
+        if(self.isDimAvailable):
+            # a vertical scale
+            self.dimScale = Gtk.Scale(orientation=Gtk.Orientation.VERTICAL, adjustment=gtkAdjustmentForDimScale)
         
-        # we connect the signal "value-changed" emitted by the scale with the callback function scale_moved
-        self.dimScale.connect("value-changed", self.dim_scale_moved)
-        self.brightnessScale.connect("value-changed", self.brightness_scale_moved)
+        if(self.isBacklightAvailable):
+            self.brightnessScale = Gtk.Scale(orientation=Gtk.Orientation.VERTICAL, adjustment=gtkAdjustmentForBrightnessScale)
+        
+        if(self.isDimAvailable):
+            # that can expand vertically if there is space in the grid (see below)
+            self.dimScale.set_value_pos(Gtk.PositionType.BOTTOM)    
+            self.dimScale.set_draw_value (False)
+            self.dimScale.set_vexpand(True)
+            self.dimScale.set_hexpand(True)
+            self.dimScale.set_inverted(True)
 
-        # value labels
-        self.dimValueLabel = Gtk.Label()
-        self.dimValueLabel.set_text("")
+        if(self.isBacklightAvailable):
+            self.brightnessScale.set_value_pos(Gtk.PositionType.BOTTOM)
+            self.brightnessScale.set_draw_value (False)
+            self.brightnessScale.set_vexpand(True)
+            self.brightnessScale.set_hexpand(True)
+            self.brightnessScale.set_inverted(True)
+        
+        if(self.isDimAvailable):
+            # we connect the signal "value-changed" emitted by the scale with the callback function scale_moved
+            self.dimScale.connect("value-changed", self.dim_scale_moved)
+        
+        if(self.isBacklightAvailable):
+            self.brightnessScale.connect("value-changed", self.brightness_scale_moved)
+
+        if(self.isDimAvailable):
+            # value labels
+            self.dimValueLabel = Gtk.Label()
+            self.dimValueLabel.set_text("")
        
-        self.brightnessValueLabel = Gtk.Label()
-        self.brightnessValueLabel.set_text("")
+        if(self.isBacklightAvailable):
+            self.brightnessValueLabel = Gtk.Label()
+            self.brightnessValueLabel.set_text("")
 
-        self.dimTitleLabel = Gtk.Label()
-        self.dimTitleLabel.set_text("Dim")
+        if(self.isDimAvailable):
+            self.dimTitleLabel = Gtk.Label()
+            self.dimTitleLabel.set_text("Dim")
 
-        self.brightnessTitleLabel = Gtk.Label()
-        self.brightnessTitleLabel.set_text("Light")
+        if(self.isBacklightAvailable):
+            self.brightnessTitleLabel = Gtk.Label()
+            self.brightnessTitleLabel.set_text("Light")
 
         # a grid to attach the widgets
         grid = Gtk.Grid()
@@ -229,15 +285,28 @@ class UBrightnessControllerApplet(Budgie.Applet):
         grid.set_margin_left(5)
         grid.set_margin_right(5)
 
-        #Brightness
-        grid.attach(self.brightnessTitleLabel, 0, 0, 1, 1)
-        grid.attach(self.brightnessScale, 0, 1, 1, 1)
-        grid.attach(self.brightnessValueLabel, 0, 2, 1, 1)
+        if(self.isBacklightAvailable and self.isDimAvailable):
+            #Brightness
+            grid.attach(self.brightnessTitleLabel, 0, 0, 1, 1)
+            grid.attach(self.brightnessScale, 0, 1, 1, 1)
+            grid.attach(self.brightnessValueLabel, 0, 2, 1, 1)
 
-        #Dim
-        grid.attach(self.dimTitleLabel, 1, 0, 1, 1)
-        grid.attach(self.dimScale, 1, 1, 1, 1)
-        grid.attach(self.dimValueLabel, 1, 2, 1, 1)
+            #Dim
+            grid.attach(self.dimTitleLabel, 1, 0, 1, 1)
+            grid.attach(self.dimScale, 1, 1, 1, 1)
+            grid.attach(self.dimValueLabel, 1, 2, 1, 1)
+
+        elif(self.isDimAvailable):
+            #Dim
+            grid.attach(self.dimTitleLabel, 0, 0, 1, 1)
+            grid.attach(self.dimScale, 0, 1, 1, 1)
+            grid.attach(self.dimValueLabel, 0, 2, 1, 1)
+
+        elif(self.isBacklightAvailable):
+            #Brightness
+            grid.attach(self.brightnessTitleLabel, 0, 0, 1, 1)
+            grid.attach(self.brightnessScale, 0, 1, 1, 1)
+            grid.attach(self.brightnessValueLabel, 0, 2, 1, 1)
 
         self.popover.add(grid)
         self.popover.get_child().show_all()
@@ -245,12 +314,15 @@ class UBrightnessControllerApplet(Budgie.Applet):
         self.show_all()
         self.box.connect("button-press-event", self.on_press)
         
-        self.dimValue = self.retriveDimValue()
-        self.setBrightness()
-        self.dimScale.set_value(self.dimValue * 100)
-        self.brightnessScale.set_value(self.brightnessValue)
+        if(self.isDimAvailable):
+            self.dimValue = self.retriveDimValue()
+            self.dimScale.set_value(self.dimValue * 100)
 
-    def	on_press(self, box, e):
+        if(self.isBacklightAvailable):
+            self.setBrightness()
+            self.brightnessScale.set_value(self.brightnessValue)
+
+    def on_press(self, box, e):
         if e.button != 1:
             return Gdk.EVENT_PROPAGATE
         if self.popover.get_visible():
@@ -260,6 +332,5 @@ class UBrightnessControllerApplet(Budgie.Applet):
         return Gdk.EVENT_STOP
 
     def do_update_popovers(self, manager):
-    	self.manager = manager
-    	self.manager.register_popover(self.box, self.popover)
-
+        self.manager = manager
+        self.manager.register_popover(self.box, self.popover)
