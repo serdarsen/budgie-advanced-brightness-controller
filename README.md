@@ -1,8 +1,6 @@
 UBrightnessController  
 ========  
 
-[![forthebadge](https://forthebadge.com/images/badges/made-with-python.svg)](https://forthebadge.com)
- 
 <br/>  
 UBrightnessController is a Budgie Desktop applet for productivity.<br/><br/>  
   
@@ -11,7 +9,7 @@ UBrightnessController is a Budgie Desktop applet for productivity.<br/><br/>  
 Install  
 -------  
 ```bash  
-   # !!! Before start, I'm not a professional linux developer. I wrote this applet and it works perfect on my ubuntu budgie (ubuntu 17:10, budgie version: 10.4,  device: acer aspire 5745g) . Please take your own risks and backups before install. Have fun!
+   # !!! Before start, I'm not a professional linux developer. I wrote this applet and it works perfect on my ubuntu budgie (ubuntu 17:10 and 18.04, budgie version: 10.4,  device: acer aspire 5745g) . Please take your own risks and backups before install. Have fun!
 
    # Clone or download the repository
    git clone https://github.com/serdarsen/UBrightnessController.git
@@ -27,8 +25,6 @@ Install
 ```  
 References  
 ------- 
-
-Thanks my references for their projects:
 
 [Ubuntu Budgie](https://ubuntubudgie.org/)<br/>
 [budgie-desktop/budgie-desktop-examples](https://github.com/budgie-desktop/budgie-desktop-examples/tree/master/python_project)<br/>
