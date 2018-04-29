@@ -33,8 +33,10 @@ import gi.repository
 gi.require_version('Budgie', '1.0')
 from gi.repository import Budgie, GObject, Gtk, Gdk
 import check_displays as CDisplay
-import os.path
+import os, errno
+
 import subprocess
+from Log import Log
 
 class UBrightnessController(GObject.GObject, Budgie.Plugin):
     #This is simply an entry point into your Budgie Applet implementation. Note you must always override Object, and implement Plugin.
@@ -52,10 +54,16 @@ class UBrightnessController(GObject.GObject, Budgie.Plugin):
 
 class UBrightnessControllerApplet(Budgie.Applet):
     #Budgie.Applet is in fact a Gtk.Bin
+
+    TAG = "UBrightnessControllerApplet"
     manager = None
     isBacklightAvailable = True
     isDimAvailable = True
     dimValue = 0.5
+    config_path = ""
+    dim_cache_file_path = ""
+    image_path = ""
+    ubrightnesscontroller_path = ""
 
     ############################################
     ###  Brightness (Light) methods Start      #
@@ -63,15 +71,23 @@ class UBrightnessControllerApplet(Budgie.Applet):
     MAXSTEPS = 15 # Depends on gnome-settings-daemon
     closest = lambda self, num,list: min(list, key = lambda x: abs(x-num))
 
+    def makeDirIfNotExist(self, path):
+        if (path is not ""):
+            try:
+                os.makedirs(path)
+            except OSError as e:
+                if e.errno != errno.EEXIST:
+                    raise
+
     def setBacklightAvailable(self, b):
         self.isBacklightAvailable = b
         if(not self.isBacklightAvailable):
-            print("UBrightnessController No backlight detected")
+            Log.i(self.TAG, "UBrightnessController No backlight detected")
 
     def setDimAvailable(self, b):
         self.isDimAvailable = b
         if(not self.isDimAvailable):
-            print("UBrightnessController Dim is not available")
+            Log.i(self.TAG, "UBrightnessController Dim is not available")
 
     def get_brightness_settings(self):
         if self.max_brightness < self.MAXSTEPS:
@@ -128,27 +144,29 @@ class UBrightnessControllerApplet(Budgie.Applet):
     ###  Brightness (Dim) methods Start        #
     ############################################
     def saveDimValue(self, val):
-        try:
-            file = open(self.file_path,"w")
-            file.write("%s"%(str(val)))
-            file.close()
-        except:
-            print("UBrightnessController dim value save error")
+        if(self.dim_cache_file_path is not ""):
+            try:
+                file = open(self.dim_cache_file_path, "w+")
+                file.write("%s"%(str(val)))
+                file.close()
+            except:
+                Log.e(self.TAG, "error_4010 dim value save error")
         
     def retriveDimValue(self):
         val = "0.5"
         try:
-            if(os.path.isfile(self.file_path)):
-                file = open(self.file_path,"r")
-                file.seek(0)
-                val = file.read() 
-                file.close()
-                if (val == None):
-                    val = "0.5"
-                if (val == ""):
-                    val = "0.5"
+            if (self.dim_cache_file_path is not ""):
+                if(os.path.isfile(self.dim_cache_file_path)):
+                    file = open(self.dim_cache_file_path, "r+")
+                    file.seek(0)
+                    val = file.read()
+                    file.close()
+                    if (val == None):
+                        val = "0.5"
+                    if (val == ""):
+                        val = "0.5"
         except:
-            print("UBrightnessController dim value retrive error")
+            Log.e(self.TAG, "error_4011 dim value retrive error")
 
         return float("%s"%(val)) 
 
@@ -191,12 +209,18 @@ class UBrightnessControllerApplet(Budgie.Applet):
     def __init__(self, uuid):
 
         Budgie.Applet.__init__(self)
-        
-        #about files
-        self.dir_path = os.path.dirname(os.path.realpath(__file__))
-        self.file_path = self.dir_path + "/ubrightnesscontroller"
-        self.image_path = self.dir_path + "/brightness.svg"
-       
+
+        # about files
+        try:
+            self.home_dir = os.path.expanduser("~")
+            self.dir_path = os.path.dirname(os.path.realpath(__file__))
+            self.ubrightnesscontroller_path = self.home_dir + '/.config/ubrightnesscontroller'
+            self.makeDirIfNotExist(self.ubrightnesscontroller_path)
+            self.dim_cache_file_path = self.ubrightnesscontroller_path + "/dim.txt"
+            self.image_path = self.dir_path + "/brightness.svg"
+        except:
+            Log.e("error_1015 get files path error")
+
         #about displays
         self.display1 = None
         self.display2 = None
@@ -206,10 +230,11 @@ class UBrightnessControllerApplet(Budgie.Applet):
         self.box = Gtk.EventBox()
         
         #about ui
-        self.iconImage = Gtk.Image()
-        self.iconImage.set_from_file(self.image_path)
-        #self.iconImage = Gtk.Image.new_from_icon_name("display-brightness-symbolic", Gtk.IconSize.BUTTON)
-        self.box.add(self.iconImage)
+        if(self.image_path is not ""):
+            self.iconImage = Gtk.Image()
+            self.iconImage.set_from_file(self.image_path)
+            #self.iconImage = Gtk.Image.new_from_icon_name("display-brightness-symbolic", Gtk.IconSize.BUTTON)
+            self.box.add(self.iconImage)
         self.box.show_all()
         self.add(self.box)
         self.popover = Budgie.Popover.new(self.box)

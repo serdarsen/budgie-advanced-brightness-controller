@@ -24,8 +24,7 @@ function fail() {
 echo "Installing UBrightnessController to $PLUGIN_DIR"
 
 sudo rm -rf "${PLUGIN_DIR}/UBrightnessController" || fail
-sudo cp -r ./src/UBrightnessController "${PLUGIN_DIR}/" || fail 
-sudo chmod -R 755 "${PLUGIN_DIR}/UBrightnessController/ubrightnesscontroller" || fail
+sudo cp -r ./src/UBrightnessController "${PLUGIN_DIR}/" || fail
 sudo chmod -R 644 "${PLUGIN_DIR}/UBrightnessController/UBrightnessController.py" || fail
 budgie-panel --replace &
 
