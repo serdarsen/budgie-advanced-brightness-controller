@@ -93,7 +93,7 @@ class UBrightnessControllerApplet(Budgie.Applet):
         if self.max_brightness < self.MAXSTEPS:
             bs = range(0, self.max_brightness, 1)
         else:
-            bs = range(0, self.max_brightness, self.max_brightness/self.MAXSTEPS)
+            bs = range(0, self.max_brightness, self.max_brightness//self.MAXSTEPS)
             bs.append(self.max_brightness)
         return bs
 
