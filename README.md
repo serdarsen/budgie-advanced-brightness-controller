@@ -29,7 +29,7 @@ References
 [Ubuntu Budgie](https://ubuntubudgie.org/)<br/>
 [budgie-desktop/budgie-desktop-examples](https://github.com/budgie-desktop/budgie-desktop-examples/tree/master/python_project)<br/>
 [LordAmit/Brightness](https://github.com/LordAmit/Brightness)<br/>
-[ilgarmehmetali/budgie-brightness-control-applet](https://github.com/ilgarmehmetali/budgie-brightness-control-applet/blob/master/src/BudgieBrightnessControlApplet.vala)<br/>
+[ilgarmehmetali/budgie-brightness-control-applet](https://github.com/ilgarmehmetali/budgie-brightness-control-applet)<br/>
 [dgaw/budgie-workspaces-compact](https://github.com/dgaw/budgie-workspaces-compact)
 
 
