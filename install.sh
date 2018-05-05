@@ -4,7 +4,7 @@ PLUGIN_DIR="/usr/lib/budgie-desktop/plugins"
 
 ICON_DIR="/usr/share/pixmaps"
 
-declare -a icons=("u-brightness-controller-1-symbolic.svg")
+declare -a icons=("budgie-advanced-brightness-controller-1-symbolic.svg")
 
 # Pre-install checks
 if [ $(id -u) = 0 ]
@@ -34,11 +34,11 @@ function fail_icon() {
 }
 
 # Actual installation
-echo "Installing UBrightnessController to $PLUGIN_DIR"
+echo "Installing Advanced Brightness Controller to $PLUGIN_DIR"
 
-sudo rm -rf "${PLUGIN_DIR}/UBrightnessController" || fail
-sudo cp -r ./src/UBrightnessController "${PLUGIN_DIR}/" || fail
-sudo chmod -R 644 "${PLUGIN_DIR}/UBrightnessController/UBrightnessController.py" || fail
+sudo rm -rf "${PLUGIN_DIR}/budgie-advanced-brightness-controller" || fail
+sudo cp -r ./src/budgie-advanced-brightness-controller "${PLUGIN_DIR}/" || fail
+sudo chmod -R 644 "${PLUGIN_DIR}/budgie-advanced-brightness-controller/AdvancedBrightnessController.py" || fail
 
 
 # icon installation

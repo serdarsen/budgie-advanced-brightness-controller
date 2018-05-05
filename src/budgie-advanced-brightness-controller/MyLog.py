@@ -25,7 +25,7 @@ class MyLog():
     INFO_TAG = "MyLog i: "
 
     userHomePath = os.path.expanduser("~")
-    appCacheFolderName = "u-brightness-controller"
+    appCacheFolderName = "budgie-advanced-brightness-controller"
     appCacheFolderPath = userHomePath + "/.cache/" + appCacheFolderName
     appLogFilePath = appCacheFolderPath + "/log"
 

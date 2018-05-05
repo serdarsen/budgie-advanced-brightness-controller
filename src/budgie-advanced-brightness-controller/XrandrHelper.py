@@ -26,12 +26,13 @@ class XrandrHelper():
 
 
     def __init__(self):
+        MyLog.d(self.TAG, "init")
 
         # about files
         try:
             self.home_dir = os.path.expanduser("~")
             self.dir_path = os.path.dirname(os.path.realpath(__file__))
-            self.ubrightnesscontroller_path = self.home_dir + '/.config/u-brightness-controller'
+            self.ubrightnesscontroller_path = self.home_dir + '/.config/budgie-advanced-brightness-controller'
             self.makeDirIfNotExist(self.ubrightnesscontroller_path)
             self.dimCacheFilePath = self.ubrightnesscontroller_path + "/dim.txt"
         except:
@@ -42,6 +43,9 @@ class XrandrHelper():
         self.display2 = None
         self.noOfConnectedDev = 0
         self.assignDisplays()
+
+	    # update
+        self.update(self.retriveDimValue())
 
     def saveDimValue(self, val):
         if (self.dimCacheFilePath is not ""):

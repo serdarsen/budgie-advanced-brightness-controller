@@ -1,10 +1,10 @@
-UBrightnessController  
+Advanced Brightness Controller  
 ========  
 
 <br/>  
-UBrightnessController is a Budgie Desktop applet for productivity.<br/><br/>  
+Advanced Brightness Controller is a Budgie Desktop applet for productivity.<br/><br/>  
   
-<img src="https://raw.githubusercontent.com/serdarsen/UBrightnessController/master/screenshots/screenshot2.gif" width="341" height="354"/>  
+<img src="https://raw.githubusercontent.com/serdarsen/budgie-advanced-brightness-controller/master/screenshots/screenshot2.gif" width="341" height="354"/>  
   
 Install  
 -------  
@@ -12,15 +12,15 @@ Install
    # !!! Before start, I'm not a professional linux developer. I wrote this applet and it works perfect on my ubuntu budgie (ubuntu 17:10 and 18.04, budgie version: 10.4,  device: acer aspire 5745g) . Please take your own risks and backups before install. Have fun!
 
    # Clone or download the repository
-   git clone https://github.com/serdarsen/UBrightnessController.git
+   git clone https://github.com/serdarsen/budgie-advanced-brightness-controller.git
    
-   # Go to the UBrightnessController directory (first)
-   cd UBrightnessController
+   # Go to the budgie-advanced-brightness-controller directory (first)
+   cd budgie-advanced-brightness-controller
 
    # Execute the install script.
    ./install.sh
    
-   # You can add U Brightness Controller to your panel from Budgie Desktop Settings.
+   # You can add Advanced Brightness Controller to your panel from Budgie Desktop Settings.
 
 ```  
 References  

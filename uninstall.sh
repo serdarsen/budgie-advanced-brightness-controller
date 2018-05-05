@@ -4,7 +4,7 @@ PLUGIN_DIR="/usr/lib/budgie-desktop/plugins"
 
 ICON_DIR="/usr/share/pixmaps"
 
-declare -a icons=("u-brightness-controller-symbolic.svg")
+declare -a icons=("budgie-advanced-brightness-controller-1-symbolic.svg")
 
 # Pre-install checks
 if [ $(id -u) = 0 ]
@@ -36,11 +36,9 @@ function fail_icon() {
 
 
 # Actual uninstallation
-echo "Uninstalling U Brightness Controller to $PLUGIN_DIR"
+echo "Uninstalling Advanced Brightness Controller to $PLUGIN_DIR"
 
-sudo rm -rf "${PLUGIN_DIR}/UBrightnessController" || fail
-sudo rm -rf "./cache/u-brightness-controller" || fail
-sudo rm -rf "./config/u-brightness-controller" || fail
+sudo rm -rf "${PLUGIN_DIR}/budgie-advanced-brightness-controller" || fail
 
 # icon uninstallation
 for icon in "${icons[@]}"

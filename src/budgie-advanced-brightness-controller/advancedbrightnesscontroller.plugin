@@ -1,0 +1,9 @@
+[Plugin]
+Loader=python3
+Module=AdvancedBrightnessController
+Name=Advanced Brightness Controller
+Description=Advanced Brightness Controller
+Authors=Serdar ŞEN
+Copyright=Copyright © 2018 Serdar ŞEN
+Website=https://github.com/serdarsen
+Icon=budgie-advanced-brightness-controller-1-symbolic

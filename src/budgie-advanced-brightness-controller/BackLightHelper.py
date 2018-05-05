@@ -22,6 +22,7 @@ class BackLightHelper():
 
 
     def __init__(self):
+        MyLog.d(self.TAG, "init")
 
         self.maxBrightness = self.getMaxBrightnessFromHelper()
         self.currentBrightness = self.getCurrentBrightnessFromHelper()

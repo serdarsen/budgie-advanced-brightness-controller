@@ -18,39 +18,34 @@ from XrandrHelper import XrandrHelper
 from MyLog import MyLog
 
 
-class UBrightnessController(GObject.GObject, Budgie.Plugin):
+class AdvancedBrightnessController(GObject.GObject, Budgie.Plugin):
     #This is simply an entry point into your Budgie Applet implementation. Note you must always override Object, and implement Plugin.
     
     # Good manners, make sure we have unique name in GObject type system
-    __gtype_name__ = "io_serdarsen_github_ubrightnesscontroller"
+    __gtype_name__ = "io_serdarsen_github_budgie_advanced_brightness_controller"
 
     def __init__(self):
         #Initialisation is important.
         GObject.Object.__init__(self)
 
-
     def do_get_panel_widget(self, uuid):
         #This is where the real fun happens. Return a new Budgie.Applet instance with the given UUID. The UUID is determined by the BudgiePanelManager, and is used for lifetime tracking.
-        return UBrightnessControllerApplet(uuid)
+        return AdvancedBrightnessControllerApplet(uuid)
 
-    def budgie_popover_key_press(self, widget, key, udata):
-        MyLog.d(self.TAG, "budgie_popover_key_press")
-
-class UBrightnessControllerApplet(Budgie.Applet):
+class AdvancedBrightnessControllerApplet(Budgie.Applet):
     #Budgie.Applet is in fact a Gtk.Bin
 
-    TAG = "UBrightnessControllerApplet"
+    TAG = "AdvancedBrightnessControllerApplet"
     manager = None
 
     def __init__(self, uuid):
 
         Budgie.Applet.__init__(self)
-
         self.backLightHelper = BackLightHelper()
         self.xrandrHelper = XrandrHelper()
 
         self.indicatorBox = Gtk.EventBox()
-        self.iconIndicator = Gtk.Image.new_from_icon_name("u-brightness-controller-1-symbolic", Gtk.IconSize.LARGE_TOOLBAR)
+        self.iconIndicator = Gtk.Image.new_from_icon_name("budgie-advanced-brightness-controller-1-symbolic", Gtk.IconSize.MENU)
         self.indicatorBox.add(self.iconIndicator)
         self.indicatorBox.show_all()
         self.add(self.indicatorBox)
@@ -140,6 +135,7 @@ class UBrightnessControllerApplet(Budgie.Applet):
 
     def indicatorBoxOnClick(self, box, e):
         self.updadeBrightness()
+        self.updateDim()
         if e.button != 1:
             return Gdk.EVENT_PROPAGATE
         if self.popover.get_visible():
@@ -152,13 +148,11 @@ class UBrightnessControllerApplet(Budgie.Applet):
     def brightnessScaleMoved(self, event):
         self.backLightHelper.update(self.brightnessScale.get_value())
         self.brightnessValueLabel.set_text("%.0f" % self.brightnessScale.get_value())
-        MyLog.d(self.TAG, "brightnessScaleMoved %.0f" % self.brightnessScale.get_value())
 
     def dimScaleMoved(self, event):
         # get brightness from scale ui element
         self.xrandrHelper.update(self.dimScale.get_value() / 100)
         self.dimValueLabel.set_text("%.1f" % self.dimScale.get_value())
-        MyLog.d(self.TAG, "dimScaleMoved %.1f" % self.dimScale.get_value())
 
 
     def do_update_popovers(self, manager):
@@ -171,4 +165,7 @@ class UBrightnessControllerApplet(Budgie.Applet):
         self.backLightHelper.update(brightness)
         self.brightnessValueLabel.set_text("%.0f" % brightness)
         self.brightnessScale.set_value(brightness)
-        MyLog.d(self.TAG, "updadeBrightness %.0f" % brightness)
+        ## MyLog.d(self.TAG, "updadeBrightness %.0f" % brightness)
+
+    def updateDim(self):
+        self.xrandrHelper.update(self.xrandrHelper.retriveDimValue())
