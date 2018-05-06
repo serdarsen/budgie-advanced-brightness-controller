@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# This file is part of U Brightness Controller
+# This file is part of Advanced Brightness Controller
 
 # Copyright © 2018 Serdar ŞEN <serdarbote@gmail.com>
 

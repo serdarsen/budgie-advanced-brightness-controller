@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# This file is part of budgie-browser-profile-launcher
+# This file is part of Advanced Brightness Controller
 
 # Copyright © 2015-2017 Ikey Doherty <ikey@solus-project.com>
 # Copyright © 2018 Serdar ŞEN <serdarbote@gmail.com>
