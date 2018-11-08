@@ -1,3 +1,4 @@
+
 #!/usr/bin/env python3
 
 # This file is part of Advanced Brightness Controller
@@ -24,7 +25,6 @@ class XrandrHelper():
     dimCacheFilePath = ""
     ubrightnesscontroller_path = ""
 
-
     def __init__(self):
         MyLog.d(self.TAG, "init")
 
@@ -32,13 +32,14 @@ class XrandrHelper():
         try:
             self.home_dir = os.path.expanduser("~")
             self.dir_path = os.path.dirname(os.path.realpath(__file__))
-            self.ubrightnesscontroller_path = self.home_dir + '/.config/budgie-advanced-brightness-controller'
+            self.ubrightnesscontroller_path = self.home_dir + \
+                '/.config/budgie-advanced-brightness-controller'
             self.makeDirIfNotExist(self.ubrightnesscontroller_path)
             self.dimCacheFilePath = self.ubrightnesscontroller_path + "/dim.txt"
         except:
             MyLog.e(self.TAG, "Error:6010")
 
-        #about displays
+        # about displays
         self.display1 = None
         self.display2 = None
         self.noOfConnectedDev = 0
@@ -95,6 +96,8 @@ class XrandrHelper():
         try:
             cmd_value = "xrandr --output %s --brightness %s" % (self.display1, self.dimValue)
             subprocess.check_output(cmd_value, shell=True)
+            cmd_value = "xrandr --output %s --brightness %s" % (self.display2, self.dimValue)
+            subprocess.check_output(cmd_value, shell=True)
         except:
             MyLog.e(self.TAG, "Error:6014")
             self.setAvailable(False)
@@ -135,3 +138,4 @@ class XrandrHelper():
                 if word == 'connected':
                     connected_displays.append(words[0])
         return connected_displays
+
