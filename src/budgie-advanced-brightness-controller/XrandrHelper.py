@@ -3,7 +3,7 @@
 
 # This file is part of Advanced Brightness Controller
 
-# Copyright © 2018 Serdar ŞEN <serdarbote@gmail.com>
+# Copyright © 2019 Serdar ŞEN <serdarsendev@gmail.com>
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -77,6 +77,7 @@ class XrandrHelper():
 
     def assignDisplays(self):
         # assigns display name
+        self.checkIfSecondMonitorActive()
 
         try:
             self.displays = self.detectDisplayDevices()
@@ -91,16 +92,27 @@ class XrandrHelper():
             MyLog.e(self.TAG, "Error:6013")
             self.setAvailable(False)
 
-    def setDim(self):
+    def setDimDisplay1(self):
         # Change brightness
         try:
-            cmd_value = "xrandr --output %s --brightness %s" % (self.display1, self.dimValue)
-            subprocess.check_output(cmd_value, shell=True)
-            cmd_value = "xrandr --output %s --brightness %s" % (self.display2, self.dimValue)
-            subprocess.check_output(cmd_value, shell=True)
+            if self.display1 is not None:
+                #MyLog.i(self.TAG, "display1: %s" %(self.display1))
+                cmd_value = "xrandr --output %s --brightness %s" % (self.display1, self.dimValue)
+                subprocess.check_output(cmd_value, shell=True)
         except:
             MyLog.e(self.TAG, "Error:6014")
             self.setAvailable(False)
+
+    def setDimDisplay2(self):
+        # Change brightness
+        try:
+            if self.display2 is not None and self.isSecondMonitorActive:
+                #MyLog.i(self.TAG, "display2: %s" %(self.display2))
+                cmd_value = "xrandr --output %s --brightness %s" % (self.display2, self.dimValue)
+                subprocess.check_output(cmd_value, shell=True)
+        except:
+            MyLog.e(self.TAG, "Error:6075")
+            # self.setAvailable(False)            
 
     # any signal from the scales is signaled to the dimValueLabel the text of which is changed
     def update(self, dimValue):
@@ -108,7 +120,8 @@ class XrandrHelper():
         if (self.isAvailable):
             self.dimValue = dimValue
             self.saveDimValue(self.dimValue)
-            self.setDim()
+            self.setDimDisplay1()
+            self.setDimDisplay2()
 
     def makeDirIfNotExist(self, path):
         if (path is not ""):
@@ -123,6 +136,16 @@ class XrandrHelper():
         self.isAvailable = b
         if (not self.isAvailable):
             MyLog.i(self.TAG, "Dim is not available")
+
+    def checkIfSecondMonitorActive(self):
+        self.activeMonitors = []
+        xrandr_output = subprocess.check_output('xrandr --listactivemonitors', shell=True)
+        lines = xrandr_output.decode("ascii")
+        #MyLog.i(self.TAG, "lines: %s"%(lines))
+        if 'Monitors: 2' in lines:
+            self.isSecondMonitorActive = True
+
+
 
     def detectDisplayDevices(self):
         # Detects available displays. returns connected_displays This contains the available device names compatible with xrandr
