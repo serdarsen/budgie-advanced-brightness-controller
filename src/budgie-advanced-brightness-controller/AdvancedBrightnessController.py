@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#! /usr/bin/python3
 
 # This file is part of Advanced Brightness Controller
 
@@ -148,8 +148,9 @@ class AdvancedBrightnessControllerApplet(Budgie.Applet):
 
     # any signal from the scales is signaled to the dimValueLabel the text of which is changed
     def brightnessScaleMoved(self, event):
-        self.backLightHelper.update(self.brightnessScale.get_value())
-        self.brightnessValueLabel.set_text("%.0f" % self.brightnessScale.get_value())
+        if (self.backLightHelper.isAvailable):
+            self.backLightHelper.update(self.brightnessScale.get_value())
+            self.brightnessValueLabel.set_text("%.0f" % self.brightnessScale.get_value())
 
     def dimScaleMoved(self, event):
         # get brightness from scale ui element
@@ -163,11 +164,12 @@ class AdvancedBrightnessControllerApplet(Budgie.Applet):
 
 
     def updadeBrightness(self):
-        brightness = self.backLightHelper.getCurrentBrightnessFromHelper()
-        self.backLightHelper.update(brightness)
-        self.brightnessValueLabel.set_text("%.0f" % brightness)
-        self.brightnessScale.set_value(brightness)
-        ## MyLog.d(self.TAG, "updadeBrightness %.0f" % brightness)
+        if (self.backLightHelper.isAvailable):
+            brightness = self.backLightHelper.getCurrentBrightnessFromHelper()
+            self.backLightHelper.update(brightness)
+            self.brightnessValueLabel.set_text("%.0f" % brightness)
+            self.brightnessScale.set_value(brightness)
+            ## MyLog.d(self.TAG, "updadeBrightness %.0f" % brightness)
 
     def updateDim(self):
         self.xrandrHelper.update(self.xrandrHelper.retriveDimValue())
