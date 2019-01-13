@@ -20,7 +20,7 @@ from MyLog import MyLog
 
 class AdvancedBrightnessController(GObject.GObject, Budgie.Plugin):
     #This is simply an entry point into your Budgie Applet implementation. Note you must always override Object, and implement Plugin.
-    
+
     # Good manners, make sure we have unique name in GObject type system
     __gtype_name__ = "io_serdarsen_github_budgie_advanced_brightness_controller"
 
@@ -71,7 +71,7 @@ class AdvancedBrightnessControllerApplet(Budgie.Applet):
 
         if(self.xrandrHelper.isAvailable):
             # Gtk.Adjustment(initial value - won't work properly I'm also using set_value() below, min value, max value, step increment - press cursor keys to see!, page increment - click around the handle to see!, age size - not used here)
-            gtkAdjustmentForDimScale = Gtk.Adjustment(50, 10, 100, 5, 0.1, 0) 
+            gtkAdjustmentForDimScale = Gtk.Adjustment(50, 10, 100, 5, 0.1, 0)
             # a vertical scale
             self.dimScale = Gtk.Scale(orientation=Gtk.Orientation.VERTICAL, adjustment=gtkAdjustmentForDimScale)
             # that can expand vertically if there is space in the grid (see below)
@@ -134,7 +134,9 @@ class AdvancedBrightnessControllerApplet(Budgie.Applet):
         self.show_all()
 
     def indicatorBoxOnClick(self, box, e):
-        self.updadeBrightness()
+        if(self.backLightHelper.isAvailable):
+            self.updadeBrightness()
+            
         self.updateDim()
         if e.button != 1:
             return Gdk.EVENT_PROPAGATE
