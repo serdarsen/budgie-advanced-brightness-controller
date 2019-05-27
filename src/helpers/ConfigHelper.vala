@@ -18,12 +18,13 @@ namespace AdvancedBrightnessController.Helpers
 {
 public class ConfigHelper
 {
-    private string configDirectoryPath = ".config";
-    private string configFilePath = "";
+    private string configDirectoryPath;
+    private string configFilePath;
 
     public ConfigHelper(string appDirNameUnderConfig, string fileName)
     {
-        configDirectoryPath = @"$configDirectoryPath/$appDirNameUnderConfig";
+        var userPath = Environment.get_user_config_dir();
+        configDirectoryPath = @"$userPath/$appDirNameUnderConfig";
         configFilePath = @"$configDirectoryPath/$fileName";
     }
 

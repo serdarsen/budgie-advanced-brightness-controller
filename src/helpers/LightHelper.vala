@@ -59,6 +59,7 @@ public class LightHelper
         // Load Lights Frome Device
         var lightsString = subprocessHelper.RunAndGetResult({"ls", "/sys/class/backlight"});
 
+        lightsString = lightsString._strip();
         if (lightsString == "")
         {
             return;
@@ -68,8 +69,8 @@ public class LightHelper
         var lightNamesCount = 0;
         foreach (var name in lightNames)
         {
-            if(name != null 
-               && name != "" 
+            name = name._strip();
+            if(name != "" 
                && !strv_contains(retrivedLightNames, name))
             {
                 var light = new Light();

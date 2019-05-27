@@ -48,7 +48,7 @@ Install from source code:
 ```bash
 # Uninstall old version.
 # Clone from github
-# Go to budgie-advanced-brightness-controller directory
+# Move into budgie-advanced-brightness-controller dir
   cd  budgie-advanced-brightness-controller
 # Build  
   meson --buildtype plain --prefix=/usr --libdir=/usr/lib --sysconfdir=/etc ..
@@ -56,9 +56,6 @@ Install from source code:
   ninja -v
 # Install  
   sudo ninja install
-
-# Go to parent 
-  cd
 # Restart laptop or logout-login or replace budgie desktop 
   budgie-panel --replace & 
 # or without terminal output  

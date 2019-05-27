@@ -62,6 +62,7 @@ public class DimHelper
         // Load Dims From Device
         var dimsString = subprocessHelper.RunAndGetResult({"xrandr", "-q"});
 
+        dimsString = dimsString._strip(); 
         if (dimsString == "")
         {
             return;
@@ -71,8 +72,8 @@ public class DimHelper
         var connectedDeviceCount = 0;
         foreach (var line in lines)
         {
-            if(line != null 
-               && line != "")
+            line = line._strip();
+            if(line != "")
             {
                 var words = line.split(" ");
                 foreach(var word in words)
