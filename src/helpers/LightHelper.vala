@@ -115,7 +115,7 @@ public class LightHelper
             IsAvailable = false; 
 
             var lightListLength = list.length();
-            GLib.message(@"Light is not available (Gnome Settings Daemon version is bigger than 3.32.0: $haveGnomeSettingsDaemon332, Number of Lights: $lightListLength)\n");
+            GLib.message(@"Light is not available (Gnome Settings Daemon version >= 3.32.0: $haveGnomeSettingsDaemon332, Number of Lights: $lightListLength)\n");
         }
     }
 

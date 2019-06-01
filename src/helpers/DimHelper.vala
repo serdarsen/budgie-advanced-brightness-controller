@@ -122,7 +122,7 @@ public class DimHelper
             IsAvailable = false;
 
             var dimListLength = list.length();
-            GLib.message(@"Dim is not available (Xrandr version is bigger than 1.5.0: $haveXrandr150, Number of Dims: $dimListLength)\n");
+            GLib.message(@"Dim is not available (Xrandr version >= 1.5.0: $haveXrandr150, Number of Dims: $dimListLength)\n");
         }
     }
     
