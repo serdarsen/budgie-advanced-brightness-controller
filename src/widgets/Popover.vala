@@ -38,7 +38,7 @@ public class Popover : Budgie.Popover
         dimHelper = new DimHelper();
         lightHelper = new LightHelper();
 
-        if(dimHelper.isAvailable && lightHelper.isAvailable)
+        if(dimHelper.IsAvailable && lightHelper.IsAvailable)
         {
             set_size_request(witdh, height);
         }
@@ -55,12 +55,12 @@ public class Popover : Budgie.Popover
     {
         BuildGrid();
         
-        if(dimHelper.isAvailable)
+        if(dimHelper.IsAvailable)
         {
             BuildDim();
         }
 
-        if(lightHelper.isAvailable)
+        if(lightHelper.IsAvailable)
         {
             BuildLight();
         }

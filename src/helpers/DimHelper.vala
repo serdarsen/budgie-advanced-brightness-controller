@@ -18,15 +18,14 @@ namespace AdvancedBrightnessController.Helpers
 {
 /**
  * DimHelper is a helper to work with 
- * freedesktop / xorg-xrandr
+ * xrandr
  * Currently working correctly with xrandr-1.5.0
- * 
- * https://github.com/freedesktop/xorg-xrandr/releases 
  * 
  */
 public class DimHelper
 {
-    public bool isAvailable {get; set;}
+    public bool IsAvailable {get; set;}
+    private bool haveXrandr150 = false;
     public List<Dim> list;
 
     private SubprocessHelper subprocessHelper;
@@ -110,13 +109,20 @@ public class DimHelper
             }
         }   
 
-        if (list.length() > 0)
+        #if HAVE_XRANDR_1_5_0
+            haveXrandr150 = true;
+        #endif
+
+        if (haveXrandr150 && list.length() > 0)
         {
-            isAvailable = true;
+            IsAvailable = true;
         }
         else
         {
-            isAvailable = false; 
+            IsAvailable = false;
+
+            var dimListLength = list.length();
+            GLib.message(@"Dim is not available (Xrandr version is bigger than 1.5.0: $haveXrandr150, Number of Dims: $dimListLength)\n");
         }
     }
     

@@ -36,6 +36,12 @@ PIXMAPS_DIR = join_paths(datadir, 'pixmaps')
 
 LIB_INSTALL_DIR = join_paths(prefix, libdir, 'budgie-desktop', 'plugins', meson.project_name())
 
+DEPENDENCY_GNOME_SETTINGS_DAEMON = dependency('gnome-settings-daemon', version: '>=3.32.0')
+DEPENDENCY_XRANDR = dependency('xrandr', version: '>=1.5.0')
+DEPENDENCY_GTK = dependency('gtk+-3.0', version: '>=3.18')
+DEPENDENCY_BUDGIE = dependency('budgie-1.0', version: '>=2')
+
+
 message('Installing applet...')
 
 subdir('src')

@@ -26,7 +26,8 @@ namespace AdvancedBrightnessController.Helpers
  */    
 public class LightHelper
 {
-    public bool isAvailable {get; set;}
+    public bool IsAvailable {get; set;}
+    private bool haveGnomeSettingsDaemon332 = false;
     public List<Light> list;
 
     private SubprocessHelper subprocessHelper;
@@ -101,13 +102,20 @@ public class LightHelper
             }       
         }
 
-        if (list.length() > 0)
+        #if HAVE_GNOME_SETTINGS_DAEMON_3_32_0
+            haveGnomeSettingsDaemon332 = true;
+        #endif
+
+        if (haveGnomeSettingsDaemon332 && list.length() > 0)
         {
-            isAvailable = true;
+            IsAvailable = true;
         }
         else
         {
-            isAvailable = false; 
+            IsAvailable = false; 
+
+            var lightListLength = list.length();
+            GLib.message(@"Light is not available (Gnome Settings Daemon version is bigger than 3.32.0: $haveGnomeSettingsDaemon332, Number of Lights: $lightListLength)\n");
         }
     }
 

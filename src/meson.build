@@ -21,15 +21,26 @@ AppletSources = [
 ]
 
 AppletDependencies = [
-dependency('gtk+-3.0', version: '>=3.18'), 
-dependency('budgie-1.0', version: '>=2')
+DEPENDENCY_GTK, 
+DEPENDENCY_BUDGIE
 ]
+
+BudgieWmStatusValaArgs = []
+
+if DEPENDENCY_GNOME_SETTINGS_DAEMON.version().version_compare('>=3.32.0')
+    BudgieWmStatusValaArgs += ['-D', 'HAVE_GNOME_SETTINGS_DAEMON_3_32_0']
+endif
+
+if DEPENDENCY_XRANDR.version().version_compare('>=1.5.0')
+    BudgieWmStatusValaArgs += ['-D', 'HAVE_XRANDR_1_5_0']
+endif
 
 AppletValaArgs = [
 '--pkg=config', 
 '--vapidir=' + VAPI_DIR, 
 '--target-glib=2.38', 
-'--enable-deprecated'
+'--enable-deprecated',
+BudgieWmStatusValaArgs
 ]
 
 AppletCArgs = [
