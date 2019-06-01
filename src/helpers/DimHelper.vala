@@ -16,9 +16,16 @@ using AdvancedBrightnessController.Models;
 
 namespace AdvancedBrightnessController.Helpers 
 {
+/**
+ * DimHelper is a helper to work with 
+ * freedesktop / xorg-xrandr
+ * Currently working correctly with xrandr-1.5.0
+ * 
+ * https://github.com/freedesktop/xorg-xrandr/releases 
+ * 
+ */
 public class DimHelper
 {
-
     public bool isAvailable {get; set;}
     public List<Dim> list;
 

@@ -16,6 +16,7 @@ Evo Pop                    |  Arc Design
 
 # Dependencies
 ```
+GNOME_SETTINGS_DAEMON_3_32_0
 budgie-1.0 >= 2
 gtk+-3.0
 vala

@@ -30,13 +30,12 @@ public class SubprocessHelper
     */
     public string RunAndGetResult(string[] cmdLine)
     {
-        Bytes output;
+        string output;
         try 
         {
             var proc = subprocessLauncher.spawnv(cmdLine);
-            proc.communicate(null, null, out output, null);
-            var data = (string)output.get_data();
-            return data;
+            proc.communicate_utf8(null, null, out output, null);
+            return output;
         } 
         catch (Error e) 
         {

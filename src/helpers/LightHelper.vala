@@ -16,6 +16,14 @@ using AdvancedBrightnessController.Models;
 
 namespace AdvancedBrightnessController.Helpers 
 {
+/**
+ * LightHelper is a helper to work with 
+ * GNOME/gnome-settings-daemon gsd-backlight-helper
+ * Currently working correctly with GNOME_SETTINGS_DAEMON_3_32_0
+ * 
+ * https://github.com/GNOME/gnome-settings-daemon/releases 
+ * 
+ */    
 public class LightHelper
 {
     public bool isAvailable {get; set;}
